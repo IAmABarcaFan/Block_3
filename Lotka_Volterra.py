@@ -4,8 +4,8 @@ from scipy.integrate import odeint
 import numpy as np
 
 # Please note that any whitespace in the filepath/argument will bug out sys.argv, as it treats them as different arguments.
+# Terminal input cleanup
 list_of_arguments = sys.argv
-list_flags = [x for x in list_of_arguments if x.startswith("--", 0, 3)]  # Have to figure out a way to seperate and group the input values.
 
 # Using a sample of 1000 prey (x) and predator (y) each.
 x = 1000
@@ -19,6 +19,18 @@ gamma_set = 0.2
 t_max = 100
 #Create a tuple to represent the initial conditions
 init_cond = (x, y)
+
+def arg_cleanup():
+    list_of_arguments.pop(0)  # Gets rid of the name of file
+    list_flags = [x for x in list_of_arguments if x.startswith("--", 0, 3)]
+
+    nested_arguments = []
+    for arg in list_of_arguments:
+        if arg.startswith("--", 0, 3):
+            argument_list = []  # Add arguments to the list until meeting another flag, then append to nested_arguments
+            nested_arguments.append(argument_list)
+
+    return list_flags, nested_arguments
 
 def diff_eq(init, t, alpha, beta, delta, gamma):
     '''
@@ -52,8 +64,10 @@ def plot_diff_eq(t, data):
     # The function should be called inside (enumerated) for loop.
     a = 'Placeholder'
 
-def main(flag_list=list_flags):
-    for flag in flag_list:  # Currently the flag system only works if --save_plot is the last flag given
+def main():
+    list_flag, nested_arguments = arg_cleanup()
+
+    for flag in list_flag:  # Currently the flag system only works if --save_plot is the last flag given
         if flag=="--initial":
             # Allow user to set initial populations for both species.
             a = 'Placeholder'
@@ -70,15 +84,15 @@ def main(flag_list=list_flags):
             # Allow user to set value for gamma.
             a = 'Placeholder'
         
-        flag_list.remove(str(flag))
+        list_flag.remove(str(flag))
              
-    if bool(flag_list)==True and flag_list[0]=='--save_plot':
+    if bool(list_flag)==True and list_flag[0]=='--save_plot':
         # Saves the plot with the provided filename.
         a = 'Placeholder'
-    elif bool(flag_list)==False:
+    elif bool(list_flag)==False:
         # Show the plot.
         a = 'Placeholder'
         
 
 if __name__ == "__main__":
-        main()
+    main()

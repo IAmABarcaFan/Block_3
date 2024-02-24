@@ -2,4 +2,3 @@ To Do List:
 1. (Line 8) Figure out a way to seperate and group the input values.
 2. Code the functions that do the numberical processing, plotting and other stuff (Remeber modularisation, don't stuff all code into main())
 3. (Line 24) Currently the flag system only works if --save_plot is the last flag given. (If there is a flow system to allow for non-indexing input, that would be great)
-4. Send all of 'Block_3' onto GitHub for collaboration
