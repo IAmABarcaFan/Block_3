@@ -17,7 +17,7 @@ gamma_set = 0.2
 # Let's solve for 100 time steps
 t_max = 100
 # Create a tuple to represent the initial conditions
-init_cond = (x, y)
+init_cond = [x, y]
 
 def arg_cleanup():
     '''
@@ -58,39 +58,44 @@ def diff_eq(init, t, alpha, beta, delta, gamma):
     Outputs:
         the gradient of the Lotka-Volterra model
     '''
+    print(init, alpha, beta, delta, gamma)  # testing
     dxdt = alpha * init[0] - beta * init[0] * init[1]
     dydt = delta * init[0] * init[1] - gamma * init[1]
     grad = [dxdt, dydt]
     return grad
 
-def solve_diff_eq(sir0, t_max, alpha, beta, delta, gamma):
+def solve_diff_eq(init, t_max, alpha, beta, delta, gamma):
     '''
     Solves the Lotka-Volterra model using odeint.
     '''
     t = np.linspace(0, t_max)
-    sir = odeint(diff_eq, sir0, t, (alpha, beta, delta, gamma))
-    return sir, t  # sir is a nested list of both values at different points in time.
+    xy_list = odeint(diff_eq, init, t, (alpha, beta, delta, gamma))
+    return xy_list, t  # sir is a nested list of both values at different points in time.
 
-def plot_diff_eq(t, data):
-    # The figure should be created outside function and for loop.
-    # The function should be called inside (enumerated) for loop.
-    a = 'Placeholder'
+def plot_diff_eq(t, data, fig, num):
+    ax = fig.add_subplot(1, len(alpha_set), num)
+    ax.plot(t, data[0], label='x')  # Plots x
+    ax.plot(t, data[1], label='y')  # Plots y
+    ax.set_title('Lotka-Volterra Model When Alpha = '+str(alpha_set[num]))
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Number of Animal Present')
+    ax.legend()
 
 def main():
     global x, y, alpha_set, beta_set, delta_set, gamma_set, init_cond
     list_flag, nested_arguments = arg_cleanup()
-    list_flag_copy = list_flag  # The copy is modified to keep count of the
 
     for index, flag in enumerate(list_flag): 
         if flag=="--initial":
             # Allow user to set initial populations for both species.
-            x = nested_arguments[index][1]
-            y = nested_arguments[index][2]
-            init_cond =(x, y)
+            x = int(nested_arguments[index][1])
+            y = int(nested_arguments[index][2])
+            init_cond = [x, y]
 
         elif flag=="--alpha":
-            # Allow user to set value(s) for alpha. Multiple subplots if more than one alpha.
-            alpha_set = nested_arguments[index] # Not finished
+            # Allow user to set value(s) for alpha. (List of values)
+            alpha_set = nested_arguments[index] 
+            alpha_set.pop(0)
 
         elif flag=='--beta':
             # Allow user to set value for beta.
@@ -103,16 +108,25 @@ def main():
         elif flag=='--gamma':
             # Allow user to set value for gamma.
             gamma_set = nested_arguments[index][1]
-        
-        list_flag_copy.remove(str(flag))
+    
+    list_flag_copy = [flag for flag in list_flag if flag=='--save_plot']
 
-    # Calculation and plotting happens here.         
-    if bool(list_flag_copy)==True and list_flag[list_flag_copy]=='--save_plot':
+    # Calculation and plotting happens here.  Multiple subplots if more than one alpha.      
+    if bool(list_flag_copy)==True and list_flag_copy[-1]=='--save_plot':
         # Saves the plot with the provided filename.
-        a = 'Placeholder'
+        fig = plt.figure()
+        for num in range(len(alpha_set)):
+            xy_list, t = solve_diff_eq(init_cond, t_max, alpha_set[num], beta_set, delta_set, gamma_set)
+            plot_diff_eq(t, xy_list, fig, num)
+        plt.savefig(str(nested_arguments[-1][1]))
+
     elif bool(list_flag_copy)==False:
         # Show the plot.
-        a = 'Placeholder'
+        fig = plt.figure()
+        for num in range(len(alpha_set)):
+            xy_list, t = solve_diff_eq(init_cond, t_max, alpha_set[num], beta_set, delta_set, gamma_set)
+            plot_diff_eq(t, xy_list, fig, num)
+        plt.show()
         
 
 if __name__ == "__main__":
