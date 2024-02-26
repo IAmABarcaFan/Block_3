@@ -58,7 +58,7 @@ def diff_eq(init, t, alpha, beta, delta, gamma):
     Outputs:
         the gradient of the Lotka-Volterra model
     '''
-    print(init, alpha, beta, delta, gamma)  # testing
+    print(init[0], init[1], alpha, beta, delta, gamma)  # testing, TypeError: can't multiply sequence by non-int of type 'numpy.float64'
     dxdt = alpha * init[0] - beta * init[0] * init[1]
     dydt = delta * init[0] * init[1] - gamma * init[1]
     grad = [dxdt, dydt]
