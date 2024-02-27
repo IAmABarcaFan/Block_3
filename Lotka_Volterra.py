@@ -7,13 +7,13 @@ import numpy as np
 list_of_arguments = sys.argv
 
 # Using a sample of 1000 prey (x) and predator (y) each.
-x = 1000
-y = 1000
+x = 500
+y = 500
 # Preset values for model parameters here.
-alpha_set = 0.15
-beta_set = 0.4
-delta_set = 0.35
-gamma_set = 0.2
+alpha_set = [0.5, 0.425]
+beta_set = 0.005
+delta_set = 0.001
+gamma_set = 0.25
 # Let's solve for 100 time steps
 t_max = 100
 # Create a tuple to represent the initial conditions
@@ -58,7 +58,7 @@ def diff_eq(init, t, alpha, beta, delta, gamma):
     Outputs:
         the gradient of the Lotka-Volterra model
     '''
-    print(init[0], init[1], alpha, beta, delta, gamma)  # testing, TypeError: can't multiply sequence by non-int of type 'numpy.float64'
+    # print(init[0], init[1], init, alpha, beta, delta, gamma)  # testing, TypeError: can't multiply sequence by non-int of type 'numpy.float64'
     dxdt = alpha * init[0] - beta * init[0] * init[1]
     dydt = delta * init[0] * init[1] - gamma * init[1]
     grad = [dxdt, dydt]
@@ -73,9 +73,9 @@ def solve_diff_eq(init, t_max, alpha, beta, delta, gamma):
     return xy_list, t  # sir is a nested list of both values at different points in time.
 
 def plot_diff_eq(t, data, fig, num):
-    ax = fig.add_subplot(1, len(alpha_set), num)
-    ax.plot(t, data[0], label='x')  # Plots x
-    ax.plot(t, data[1], label='y')  # Plots y
+    ax = fig.add_subplot(1, len(alpha_set), num+1)
+    ax.plot(t, data[:, 0], label='x')  # Plots x
+    ax.plot(t, data[:, 1], label='y')  # Plots y
     ax.set_title('Lotka-Volterra Model When Alpha = '+str(alpha_set[num]))
     ax.set_xlabel('Time')
     ax.set_ylabel('Number of Animal Present')
@@ -94,20 +94,19 @@ def main():
 
         elif flag=="--alpha":
             # Allow user to set value(s) for alpha. (List of values)
-            alpha_set = nested_arguments[index] 
-            alpha_set.pop(0)
+            alpha_set = [float(x) for x in nested_arguments[index][1:]]
 
         elif flag=='--beta':
             # Allow user to set value for beta.
-            beta_set = nested_arguments[index][1]
+            beta_set = float(nested_arguments[index][1])
 
         elif flag=='--delta':
             # Allow user to set value for delta.
-            delta_set = nested_arguments[index][1]
+            delta_set = float(nested_arguments[index][1])
 
         elif flag=='--gamma':
             # Allow user to set value for gamma.
-            gamma_set = nested_arguments[index][1]
+            gamma_set = float(nested_arguments[index][1])
     
     list_flag_copy = [flag for flag in list_flag if flag=='--save_plot']
 
@@ -125,6 +124,7 @@ def main():
         fig = plt.figure()
         for num in range(len(alpha_set)):
             xy_list, t = solve_diff_eq(init_cond, t_max, alpha_set[num], beta_set, delta_set, gamma_set)
+            print(xy_list)  # testing
             plot_diff_eq(t, xy_list, fig, num)
         plt.show()
         
