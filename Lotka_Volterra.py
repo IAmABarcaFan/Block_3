@@ -7,16 +7,16 @@ import numpy as np
 list_of_arguments = sys.argv
 
 # Using a sample of 1000 prey (x) and predator (y) each.
-x = 500
-y = 500
+x = 2
+y = 2
 # Preset values for model parameters here.
-alpha_set = [0.5, 0.425]
-beta_set = 0.005
-delta_set = 0.001
-gamma_set = 0.25
+alpha_set = [2/3, 1]
+beta_set = 4/3
+delta_set = 1
+gamma_set = 1
 # Let's solve for 100 time steps
-t_max = 100
-# Create a tuple to represent the initial conditions
+t_max = 20
+# Create a list to represent the initial conditions
 init_cond = [x, y]
 
 def arg_cleanup():
@@ -58,7 +58,6 @@ def diff_eq(init, t, alpha, beta, delta, gamma):
     Outputs:
         the gradient of the Lotka-Volterra model
     '''
-    # print(init[0], init[1], init, alpha, beta, delta, gamma)  # testing, TypeError: can't multiply sequence by non-int of type 'numpy.float64'
     dxdt = alpha * init[0] - beta * init[0] * init[1]
     dydt = delta * init[0] * init[1] - gamma * init[1]
     grad = [dxdt, dydt]
@@ -68,7 +67,7 @@ def solve_diff_eq(init, t_max, alpha, beta, delta, gamma):
     '''
     Solves the Lotka-Volterra model using odeint.
     '''
-    t = np.linspace(0, t_max)
+    t = np.linspace(0, t_max, 1000)
     xy_list = odeint(diff_eq, init, t, (alpha, beta, delta, gamma))
     return xy_list, t  # sir is a nested list of both values at different points in time.
 
@@ -124,7 +123,6 @@ def main():
         fig = plt.figure()
         for num in range(len(alpha_set)):
             xy_list, t = solve_diff_eq(init_cond, t_max, alpha_set[num], beta_set, delta_set, gamma_set)
-            print(xy_list)  # testing
             plot_diff_eq(t, xy_list, fig, num)
         plt.show()
         

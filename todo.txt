@@ -7,3 +7,17 @@ To Do List:
 
 3. (Line 79, main()) Currently the flag system only works if --save_plot is the last flag given. 
    (If there is a flow system to allow for non-indexing input, that would be great)
+
+Parameters 1 - Extinction Cycles:
+alpha_set = [0.5, 0.425]
+beta_set = 0.005
+delta_set = 0.001
+gamma_set = 0.25
+t_max = 100
+
+Parameters 2 - Sine Cycles:
+alpha_set = [1.1, 1]
+beta_set = 1
+delta_set = 1
+gamma_set = 1
+t_max = 10
