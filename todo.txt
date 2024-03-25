@@ -2,10 +2,7 @@ To Do List:
 1. To solve 3, we could put in a check for the last argument in nested_arguments, if it is --save_plot ...
    (Doing this allows for the removal of the variable list_flag_copy, and merges the two if-elif structure)
 
-2. Code the functions that do the numberical processing, plotting and other stuff 
-   (Remeber modularisation, don't stuff all code into main())
-
-3. (Line 79, main()) Currently the flag system only works if --save_plot is the last flag given. 
+2. (Line 79, main()) Currently the flag system only works if --save_plot is the last flag given. 
    (If there is a flow system to allow for non-indexing input, that would be great)
 
 Parameters 1 - Extinction Cycles:
@@ -21,3 +18,31 @@ beta_set = 1
 delta_set = 1
 gamma_set = 1
 t_max = 10
+
+https://github.com/IAmABarcaFan/Block_3.git
+
+Extra Tid Bits:
+1. Passing multiple methods in one line (i.e. c.ac1().ac2())
+   You can use multiple methods in one go. The leftmost one will run first, the returned value will be passed onto the next method.
+
+2. Argparse
+
+parser = argparse.ArgumentParser(description='Genetic data processing tool')
+parser.add_argument('--base_count', action='store_true')
+parser.add_argument('--complement', action='store_true')
+parser.add_argument('--gc_content', action='store_true')
+parser.add_argument('--gc_islands', action='store_true')
+parser.add_argument('--input', nargs='+', required=True)
+parser.add_argument('--output')
+
+args = parser.parse_args()
+input_files = args.input 
+show_bases = args.base_count 
+show_complement = args.complement
+show_gc = args.gc_content
+show_islands = args.gc_islands
+output_file = args.output 
+
+###########################
+parser.parse_args('a b --foo x y --bar 1 2'.split())
+>>>Namespace(bar=['1', '2'], baz=['a', 'b'], foo=['x', 'y'])
